@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\InvoiceDetails;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Product;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
 {
@@ -18,35 +21,38 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
 
+
+        $order_id = $request->order_id;
         $customer_id = $request->customer_id;
-        $user_id = $request->user_id;
-        $invoice_date = $request->invoice_date;
-        $notes = $request->notes;
+        $user = Auth::user();
+        $invoice_date = date('Y-m-d H:i:s');
+        $notes = '';
 
         $invoice_number = 'INV-'.date('Ymd').uniqid();
 
         $gross_total_amount = 0;
 
         $invoice = Invoice::create([
+            'order_id'=> $order_id,
             'customer_id'=> $customer_id,
-            'user_id'=> $user_id,
-            'user_id'=> $user_id,
+            'user_id'=> 2,
             'invoice_number'=> $invoice_number,
             'invoice_date'=> $invoice_date,
             'total_amount'=> 0,
             'status'=> "Pending",
         ]);
 
-        $products = $request->products;
-        $quantities = $request->quantity;
-        $amounts = $request->amount;
+
+
+
+        $orderDetails = OrderDetail::where('order_id', $order_id)->get();
 
         $total_amount = 0;
-        foreach($products as $key=>$value)
+        foreach($orderDetails as $order)
         {
-            $product_id = $products[$key];
-            $quantity  = $quantities[$key];
-            $amount  = $amounts[$key];
+            $product_id = $order->product_id;
+            $quantity  = $order->quantity;
+            $amount  = $order->price;
 
             $total_amount = $quantity * $amount;
             $gross_total_amount+= $total_amount;
@@ -69,6 +75,10 @@ class InvoiceController extends Controller
 
         $invoice->total_amount = $gross_total_amount;
         $invoice->save();
+
+        $order = Order::find($order->id);
+        $order->status = 'confirmed';
+        $order->save();
 
         return response()->json([
             'status' => 'success',

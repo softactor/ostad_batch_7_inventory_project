@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\Web\PageController;
@@ -30,6 +31,7 @@ Route::group(['prefix'=>'backend'], function(){
         Route::get('/list', [ProductController::class, 'adminProductList'])->name('admin.products.adminProductList');
         Route::get('/edit/{product}', [ProductController::class, 'adminProductEdit'])->name('admin.products.adminProductEdit');
         Route::put('/update/{product_id}', [ProductController::class, 'update'])->name('admin.products.update');
+        
     })->middleware(JwtTokenVerify::class);
 
 
@@ -47,7 +49,7 @@ Route::group(['prefix'=>'backend'], function(){
         Route::get('/', [InvoiceController::class, 'index']);
         Route::post('store', [InvoiceController::class, 'store']);
 
-        Route::get('show/{invoice}', [InvoiceController::class, 'show']);
+        Route::get('show/{invoice}', [InvoiceController::class, 'show'])->name('admin.invoice.show');
         Route::get('print/{invoice}', [InvoiceController::class, 'print']);
     })->middleware(JwtTokenVerify::class);
 
@@ -65,5 +67,17 @@ Route::get('/verify-otp', [PageController::class, 'verifyOtp'])->name('forgot-pa
 Route::group(['middleware'=> JwtTokenVerify::class], function(){
     Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [PageController::class, 'profile'])->name('profile');
+    Route::get('/customer/products', [ProductController::class, 'customerProducts'])->name('customer.products');
+
+    Route::post('/customer/product/order', [OrderController::class, 'customerOrderStore'])->name('customer.product.store');
+    Route::get('/customer/orders/list', [OrderController::class, 'customerOrders'])->name('customer.order.list');
+
+
+
+    //customer order list for admin
+    Route::get('/customer/orders', [OrderController::class, 'adminCustomerOrders'])->name('admin.customer.orders');
+
+
+
 });
 
