@@ -64,17 +64,17 @@
 
         <div id="adminNav" style="display: none;">
 
-            <a href="{{ route("dashboard")}}" class="side-bar-item {{ request()->routeIs('dashboard') ? 'side-bar-item-active' : '' }}">
+            <a href="{{ route('dashboard') }}" class="side-bar-item {{ request()->routeIs('dashboard') ? 'side-bar-item-active' : '' }}">
                 <i class="bi bi-graph-up"></i>
                 <span class="side-bar-item-caption">Dashboard</span>
             </a>
 
-            <a href="{{url("/customerPage")}}" class="side-bar-item">
+            <a href="{{ route('admin.customer.orders')}}" class="side-bar-item">
                 <i class="bi bi-people"></i>
-                <span class="side-bar-item-caption">Customer</span>
+                <span class="side-bar-item-caption">Customer Orders</span>
             </a>
 
-            <a href="{{url("/categoryPage")}}" class="side-bar-item {{ request()->routeIs('categoryPage') ? 'side-bar-item-active' : '' }}">
+            <a href="" class="side-bar-item {{ request()->routeIs('categoryPage') ? 'side-bar-item-active' : '' }}">
                 <i class="bi bi-list-nested"></i>
                 <span class="side-bar-item-caption">Category</span>
             </a>
@@ -107,12 +107,12 @@
                 <span class="side-bar-item-caption">Dashboard</span>
             </a>
 
-            <a href="#" class="side-bar-item">
+            <a href=" {{ route('customer.order.list') }} " class="side-bar-item">
                 <i class="bi bi-people"></i>
                 <span class="side-bar-item-caption">Orders</span>
             </a>
 
-            <a href="" class="side-bar-item">
+            <a href="{{ route('customer.products') }}" class="side-bar-item">
                 <i class="bi bi-bag"></i>
                 <span class="side-bar-item-caption">Products</span>
             </a>

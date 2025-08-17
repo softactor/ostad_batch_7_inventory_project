@@ -161,4 +161,11 @@ class ProductController extends Controller
         
         
     }
+
+    public function customerProducts()
+    {
+        $products = Product::orderBy('name', 'asc')->get();
+
+        return view('pages.dashboard.customers.products.list', compact('products'));
+    }
 }
